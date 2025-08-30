@@ -1,10 +1,10 @@
 package org.qazer;
 
 public class Main {
-    public static void main(String[] args) {
+    static void main(String[] args) {
 
-        String carrierImage = "";
-        String hiddenImage = "";
+        String carrierImage;
+        String hiddenImage;
         String stegoImage = "stego.png";
         //String stegoImage = String.format("stego_%s.png", FileUtilities.getTimestamp());
         String extractedImage = String.format("extracted_%s.png", FileUtilities.getTimestamp());
@@ -19,12 +19,12 @@ public class Main {
                 carrierImage = args[1];
                 hiddenImage = args[2];
                 steganographer.hideImage(carrierImage, hiddenImage, stegoImage);
-                System.out.println("Embedded " + hiddenImage + " into " + carrierImage + " successfully!");
+                System.out.println(STR."Embedded \{hiddenImage} into \{carrierImage} successfully!");
                 break;
             case "extract":
                 stegoImage = args[1];
                 steganographer.extractImage(stegoImage, extractedImage, hiddenWidth, hiddenHeight);
-                System.out.println("Extracted " + extractedImage + " from " + stegoImage + " successfully!");
+                System.out.println(STR."Extracted \{extractedImage} from \{stegoImage} successfully!");
                 break;
             default:
                 System.out.println("""

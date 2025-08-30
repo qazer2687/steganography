@@ -5,8 +5,7 @@ public class Main {
 
         String carrierImage;
         String hiddenImage;
-        String stegoImage = "stego.png";
-        //String stegoImage = String.format("stego_%s.png", FileUtilities.getTimestamp());
+        String stegoImage = String.format("stego_%s.png", FileUtilities.getTimestamp());
         String extractedImage = String.format("extracted_%s.png", FileUtilities.getTimestamp());
 
         int hiddenWidth = 720;

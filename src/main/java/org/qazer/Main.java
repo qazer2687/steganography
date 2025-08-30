@@ -26,6 +26,17 @@ public class Main {
                 steganographer.extractImage(stegoImage, extractedImage, hiddenWidth, hiddenHeight);
                 System.out.println("Extracted " + extractedImage + " from " + stegoImage + " successfully!");
                 break;
+            default:
+                System.out.println("""
+                    steganography - embed or extract an image using steganography
+                    
+                    Usage:
+                      steganography <command> [options]
+                    
+                    Commands:
+                      embed <CARRIER> <HIDDEN>    Embed HIDDEN image into CARRIER image and write a stego image.
+                      extract <STEGO>             Extract hidden image from STEGO image and write the result.
+                    """);
         }
     }
 }

@@ -60,62 +60,38 @@ public class ImageSteganographer {
         int hiddenGreen = (hiddenPixel >> 8) & 0xFF;
         int hiddenBlue = hiddenPixel & 0xFF;
 
-        // This is the core of LSB steganography.
-        // We modify the LSB of the carrier's color values.
-        // (carrier & 0xFE) sets the LSB to 0.
-        // (hidden >> 7) & 1 gets the MSB of the hidden color, which we'll embed.
-        int newRed = (carrierRed & 0xFE) | ((hiddenRed >> 7) & 1);
-        int newGreen = (carrierGreen & 0xFE) | ((hiddenGreen >> 7) & 1);
-        int newBlue = (carrierBlue & 0xFE) | ((hiddenBlue >> 7) & 1);
+        // Embed the 2 most significant bits of hidden image into 2 LSBs of carrier
+        int newRed = (carrierRed & 0xFC) | ((hiddenRed >> 6) & 0x03);
+        int newGreen = (carrierGreen & 0xFC) | ((hiddenGreen >> 6) & 0x03);
+        int newBlue = (carrierBlue & 0xFC) | ((hiddenBlue >> 6) & 0x03);
 
-        // Recombine the modified R, G, B values into a new pixel integer.
-        // The << operator shifts the bytes back into their correct positions.
-        int newPixel = (0xFF << 24) | (newRed << 16) | (newGreen << 8) | newBlue;
-        return newPixel;
+        return (0xFF << 24) | (newRed << 16) | (newGreen << 8) | newBlue;
     }
 
-    /**
-     * Extracts a hidden image from a steganographic image.
-     * @param steganographicPath The path to the image containing the hidden data.
-     * @param outputPath The path where the extracted image will be saved.
-     * @param hiddenWidth The width of the hidden image.
-     * @param hiddenHeight The height of the hidden image.
-     */
     public void extractImage(String steganographicPath, String outputPath, int hiddenWidth, int hiddenHeight) {
         try {
-            // Read the steganographic image.
             BufferedImage steganographicImage = ImageIO.read(new File(steganographicPath));
-
-            // Create a new BufferedImage to hold the extracted hidden image.
             BufferedImage extractedImage = new BufferedImage(hiddenWidth, hiddenHeight, BufferedImage.TYPE_INT_RGB);
 
-            // Iterate through the pixels of the steganographic image.
             for (int y = 0; y < hiddenHeight; y++) {
                 for (int x = 0; x < hiddenWidth; x++) {
-                    // Get the pixel from the steganographic image.
                     int stegoPixel = steganographicImage.getRGB(x, y);
 
-                    // Extract the LSB of each color channel.
-                    // (stegoPixel & 1) isolates the LSB.
-                    int redLSB = (stegoPixel >> 16) & 1;
-                    int greenLSB = (stegoPixel >> 8) & 1;
-                    int blueLSB = stegoPixel & 1;
+                    // Extract 2 LSBs from each channel
+                    int redLSB = (stegoPixel >> 16) & 0x03;
+                    int greenLSB = (stegoPixel >> 8) & 0x03;
+                    int blueLSB = stegoPixel & 0x03;
 
-                    // Reconstruct the hidden pixel's color values.
-                    // We shift the LSB back to the most significant bit to make it visible.
-                    int newRed = redLSB << 7;
-                    int newGreen = greenLSB << 7;
-                    int newBlue = blueLSB << 7;
+                    // Scale 0–3 to 0–255 for visible colors
+                    int newRed = redLSB * 85;   // 0, 85, 170, 255
+                    int newGreen = greenLSB * 85;
+                    int newBlue = blueLSB * 85;
 
-                    // Combine the new color values into a pixel integer.
                     int newPixel = (0xFF << 24) | (newRed << 16) | (newGreen << 8) | newBlue;
-
-                    // Set the pixel in the new extracted image.
                     extractedImage.setRGB(x, y, newPixel);
                 }
             }
 
-            // Save the extracted image.
             ImageIO.write(extractedImage, "png", new File(outputPath));
             System.out.println("Image successfully extracted!");
 
@@ -123,4 +99,6 @@ public class ImageSteganographer {
             e.printStackTrace();
         }
     }
+
+
 }

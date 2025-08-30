@@ -8,8 +8,8 @@ public class Main {
         String stegoImage = String.format("stego_%s.png", FileUtilities.getTimestamp());
         String extractedImage = String.format("extracted_%s.png", FileUtilities.getTimestamp());
 
-        int hiddenWidth = 720;
-        int hiddenHeight = 720;
+        int hiddenWidth = 540;
+        int hiddenHeight = 540;
 
         ImageSteganographer steganographer = new ImageSteganographer();
 
